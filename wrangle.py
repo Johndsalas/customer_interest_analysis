@@ -2,19 +2,18 @@
 
 import pandas as pd
 import regex as re
-import numpy as np
 
 import os
 
 # created files
-import accessories as a
-import board_games as b
-import concessions as c
-import paint_supplies as p
-import rpg as r
-import table_minis as m
-import tcg as t
-import other as o
+import cata_lists.accessories as a
+import cata_lists.board_games as b
+import cata_lists.concessions as c
+import cata_lists.paint_supplies as p
+import cata_lists.rpg as r
+import cata_lists.table_minis as m
+import cata_lists.tcg as t
+import cata_lists.other as o
 
 def get_prepared_data():
     '''Check local file for prepared data
@@ -40,6 +39,9 @@ def wrangle_data():
     #Aquire and merge data from local csv files
     df = aquire()
 
+    #Removes non-payment rows and drops payment column
+    df = remove_non_payments(df)
+
     #Add columns indicating year, month, day, and weekend
     #Add datetime column and set as the index
     df = get_datetime_groupings(df)
@@ -51,18 +53,19 @@ def wrangle_data():
     #Clean id column
     df = clean_rows(df)
     
-    #Removes non-payment rows and drops payment column
-    df = remove_non_payments(df)
-    
     #fill nans in id and discount columns
     df = get_filled_nan(df)
     
+    # convert values in cart from string to list
     df['cart'] = df.cart.apply(get_values_as_list)
 
+    # get master list of products
     master_list = get_master_list(df)
 
+    # get a column for each item in master list containing the number of times that item was bought
     df = get_item_counts(df, master_list)
 
+    # get a catagorie for each type of item showing the number of that type that was bought 
     df = get_major_groupings(df, master_list)
 
     return df
@@ -72,13 +75,23 @@ def aquire():
     '''Aquire and merge data from local csv files'''
 
     # read in yearly dataframes 
-    df_2021 = pd.read_csv('2021-2022.csv').sort_values('Date')
-    df_2022 = pd.read_csv('2022-2023.csv').sort_values('Date')
-    df_2023 = pd.read_csv('2023-2024.csv').sort_values('Date')
+    df_2021 = pd.read_csv('raw_data/2021-2022.csv').sort_values('Date')
+    df_2022 = pd.read_csv('raw_data/2022-2023.csv').sort_values('Date')
+    df_2023 = pd.read_csv('raw_data/2023-2024.csv').sort_values('Date')
 
     # concat yearly dataframes
     df = pd.concat([df_2021, df_2022, df_2023]).sort_values('Date')
 
+    return df
+
+
+def remove_non_payments(df):
+    '''Remove non-payment rows and drops payment column'''
+    
+    df = df[df.event == 'Payment']
+
+    df = df.drop(columns=['event'])
+    
     return df
 
 
@@ -108,13 +121,25 @@ def get_relevent_columns(df):
        renames used columns for ease of use'''
 
     # restrict to relevent columns and rename for ease of use
-    df = df[['Customer ID', 'Description', 'Event Type', 'Discount Name', 'Net Sales', 'year', 'month', 'day', 'weekday' ]]
+    df = df[['Customer ID', 
+             'Description', 
+             'Event Type', 
+             'Discount Name',
+             'Gross Sales',
+             'Discounts',
+             'Net Sales', 
+             'year', 
+             'month', 
+             'day', 
+             'weekday']]
 
 
     df = df.rename(columns={'Description' : 'cart', 
                             'Event Type' : 'event', 
                             'Customer ID' : 'id',
                             'Discount Name' : 'discount',
+                            'Gross Sales' : 'gross_sales',
+                            'Discounts' : 'discount_amount',
                             'Net Sales' : 'net_sales'})
     
     return df
@@ -128,16 +153,6 @@ def clean_rows(df):
 
     df['id'] = df['id'].str.replace(',', '')
 
-    return df
-
-
-def remove_non_payments(df):
-    '''Remove non-payment rows and drops payment column'''
-    
-    df = df[df.event == 'Payment']
-
-    df = df.drop(columns=['event'])
-    
     return df
 
 
@@ -290,7 +305,7 @@ def get_major_groupings(df, master_list):
     df_master = df_master[['all_items']]   
 
     # merge group counts to original dataframe
-    df_list = [df_acc, df_bg, df_con, df_ps, df_rpg, df_tm, df_tcg, df_other]
+    df_list = [df_acc, df_bg, df_con, df_ps, df_rpg, df_tm, df_tcg, df_other, df_master]
 
     for new_df in df_list:
         
@@ -299,38 +314,3 @@ def get_major_groupings(df, master_list):
     return df
 
 
-
-###################################### OLD CODE ############################################
-
-
-# def remove_free_drinks(df):
-#     '''remove columns containing only free drinks and subtract one from bought items for rows including free drinks'''
-    
-#     df = df[(df.discount != '1 Free Drink Ticket') | (df.total_bought > 1)]
-
-#     df['sub_one'] = np.where(df['discount'] == '1 Free Drink Ticket', 1, 0)
-
-#     df['total_bought'] = df.total_bought - df.sub_one
-
-#     df.drop(columns=['sub_one'], inplace=True)
-
-#     return df
-
-
-# def get_years(df):
-#     '''split data into years'''
-
-#     df_21 = df.loc['2021':'2021']
-#     df_22 = df.loc['2022':'2022']
-#     df_23 = df.loc['2023':'2023']
-
-#     return df_21, df_22, df_23
-
-
-# def set_datetime_as_index(df):
-#     '''sets datetime column as the index for a dataframe'''
-#     df['datetime'] = df.index
-#     df['datetime'] = pd.to_datetime(df['datetime'])
-#     df = df.set_index('datetime').sort_index()
-
-#     return df
