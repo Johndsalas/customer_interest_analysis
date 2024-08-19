@@ -88,9 +88,9 @@ def aquire():
 def remove_non_payments(df):
     '''Remove non-payment rows and drops payment column'''
     
-    df = df[df.event == 'Payment']
+    df = df[df['Event Type'] == 'Payment']
 
-    df = df.drop(columns=['event'])
+    df = df.drop(columns=['Event Type'])
     
     return df
 
@@ -123,7 +123,6 @@ def get_relevent_columns(df):
     # restrict to relevent columns and rename for ease of use
     df = df[['Customer ID', 
              'Description', 
-             'Event Type', 
              'Discount Name',
              'Gross Sales',
              'Discounts',
@@ -135,7 +134,6 @@ def get_relevent_columns(df):
 
 
     df = df.rename(columns={'Description' : 'cart', 
-                            'Event Type' : 'event', 
                             'Customer ID' : 'id',
                             'Discount Name' : 'discount',
                             'Gross Sales' : 'gross_sales',
