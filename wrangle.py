@@ -68,6 +68,9 @@ def wrangle_data():
     # get a catagorie for each type of item showing the number of that type that was bought 
     df = get_major_groupings(df, master_list)
 
+    # set index to datetime
+    df = get_datetime_index(df)
+
     return df
 
 
@@ -312,3 +315,10 @@ def get_major_groupings(df, master_list):
     return df
 
 
+def get_datetime_index(df):
+     
+    df['datetime'] = pd.to_datetime(df.index)
+
+    df = df.set_index('datetime')
+
+    return df
