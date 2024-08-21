@@ -2,7 +2,7 @@
 
 # Imports
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 def get_profiles_data(df):
     '''Takes in dataframe of store data after general preparation
@@ -47,7 +47,7 @@ def get_profiles_data(df):
 
     to_scale_df = df[cols_to_scale]
 
-    scaler = MinMaxScaler().fit(to_scale_df)
+    scaler = StandardScaler().fit(to_scale_df)
     
     scaled_array = scaler.transform(to_scale_df)
 
