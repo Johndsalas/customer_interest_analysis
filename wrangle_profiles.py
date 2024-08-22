@@ -21,7 +21,9 @@ def get_profiles_data(df):
        'role_playing_games',
        'minis_models', 
        'trading_card_games',
-       'net_sales']]
+       'net_sales',
+       'game_room_rental',
+       'all_items']]
 
     # restrict data to data from 2023
     df = df.loc['2023']
@@ -31,10 +33,9 @@ def get_profiles_data(df):
     df = df[df.id != ' ']
 
     # group data by id drop column and reset the index
-    cata_df = df.groupby('id').agg(sum)
+    df = df.groupby('id').agg(sum)
     df = df.reset_index()
-    df = df.drop(columns = ['id', 'datetime'])
-
+    df = df.drop(columns = ['id'])
 
     # scale catagory columns
     cols_to_scale = ['accessories',
@@ -43,7 +44,9 @@ def get_profiles_data(df):
                     'modeling_supplies', 
                     'role_playing_games',
                     'minis_models', 
-                    'trading_card_games']
+                    'trading_card_games',
+                    'game_room_rental',
+                    'all_items']
 
     to_scale_df = df[cols_to_scale]
 

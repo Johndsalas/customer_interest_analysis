@@ -18,7 +18,6 @@ other_list = [
 'dungeon_scrawlers',
 'egift_card',
 'fireworks',
-'game_room',
 'gamemaster',
 'gazebo',
 'gift_card',
@@ -33,11 +32,12 @@ other_list = [
 'prerelease',
 'prerelease_event',
 'raffle_ticket',
-'room_rental',
 'shipping',
 'spike_present',
 'the_dark_of_host_island_set',
 'tkay',
 'wet_erase_markers']
 
-
+game_room_list = [
+'game_room',
+'room_rental']

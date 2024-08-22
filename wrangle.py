@@ -15,6 +15,7 @@ import cata_lists.table_minis as m
 import cata_lists.tcg as t
 import cata_lists.other as o
 
+
 def get_prepared_data():
     '''Check local file for prepared data
        if not found prepare data using csv files in local file
@@ -151,6 +152,7 @@ def clean_rows(df):
         Clean id column'''
     
     df['net_sales'] = df['net_sales'].str.replace('$', '').astype(float)
+    df['gross_sales'] = df['gross_sales'].str.replace('$', '').astype(float)
 
     df['id'] = df['id'].str.replace(',', '')
 
@@ -281,6 +283,7 @@ def get_major_groupings(df, master_list):
     df_tm = df[m.table_minis_list]
     df_tcg = df[t.tcg_list]
     df_other = df[o.other_list]
+    df_room = df[o.game_room_list]
     df_master = df[master_list]
 
     # get total counts for each category by summing across each row
@@ -292,6 +295,7 @@ def get_major_groupings(df, master_list):
     df_tm['minis_models'] = df_tm.sum(axis=1)
     df_tcg['trading_card_games'] = df_tcg.sum(axis=1)
     df_other['other'] = df_other.sum(axis=1)
+    df_room['game_room_rental'] = df_room.sum(axis=1)
     df_master['all_items'] = df_master.sum(axis=1)
 
     # drop all other rows
@@ -303,10 +307,11 @@ def get_major_groupings(df, master_list):
     df_tm = df_tm[['minis_models']]
     df_tcg = df_tcg[['trading_card_games']]
     df_other = df_other[['other']] 
+    df_room = df_room[['game_room_rental']]
     df_master = df_master[['all_items']]   
 
     # merge group counts to original dataframe
-    df_list = [df_acc, df_bg, df_con, df_ps, df_rpg, df_tm, df_tcg, df_other, df_master]
+    df_list = [df_acc, df_bg, df_con, df_ps, df_rpg, df_tm, df_tcg, df_other, df_room, df_master]
 
     for new_df in df_list:
         
