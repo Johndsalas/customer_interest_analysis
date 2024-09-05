@@ -4,62 +4,66 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-def get_profiles_data(df):
+def get_profiles_data():
     '''Takes in dataframe of store data after general preparation
        Returns df of store data prepared for profiles project'''
 
-    # set index to date time
-    df['datetime'] = pd.to_datetime(df.index)
-    df = df.set_index('datetime')
+   #  # set index to date time
+   #  df['datetime'] = pd.to_datetime(df.index)
+   #  df = df.set_index('datetime')
+
+   df = pd.read_csv('prepared_store_data.csv')
 
     # get relevent columns
-    df = df[['id', 
-       'accessories',
-       'board_games', 
-       'concessions', 
-       'modeling_supplies', 
-       'role_playing_games',
-       'minis_models', 
-       'trading_card_games',
-       'net_sales',
-       'game_room_rental',
-       'all_items']]
+   df = df[['cust_id', 
+         'event_type',
+         'accessories', 
+         'board_games', 
+         'concessions', 
+         'modeling_supplies',
+         'role_playing_games', 
+         'minis_models', 
+         'trading_card_games', 
+         'other',
+         'game_room_rental', 
+         'all_items',
+         'net_sales']]
 
-    # restrict data to data from 2023
-    df = df.loc['2023']
+   df = df[df.event_type == 'Payment']
+   df = df.drop(columns = 'event_type')
 
     # revove purchases not tied to an id number
-    df = df[df.id != 'unregistered']
-    df = df[df.id != ' ']
-
-    # group data by id drop column and reset the index
-    df = df.groupby('id').agg(sum)
-    df = df.reset_index()
-    df = df.drop(columns = ['id'])
-
-    # scale catagory columns
-    cols_to_scale = ['accessories',
-                    'board_games', 
-                    'concessions', 
-                    'modeling_supplies', 
-                    'role_playing_games',
-                    'minis_models', 
-                    'trading_card_games',
-                    'game_room_rental',
-                    'all_items']
-
-    to_scale_df = df[cols_to_scale]
-
-    scaler = StandardScaler().fit(to_scale_df)
+   df = df[df.id != 'unknown']
     
-    scaled_array = scaler.transform(to_scale_df)
+   # group data by id drop column and reset the index
+   df = df.groupby('id').agg(sum)
+   df = df.reset_index()
+   df = df.drop(columns = ['id'])
 
-    scaled_df = pd.DataFrame(scaled_array, columns = cols_to_scale)
+   # scale catagory columns
+   cols_to_scale = ['accessories', 
+                  'board_games', 
+                  'concessions', 
+                  'modeling_supplies',
+                  'role_playing_games', 
+                  'minis_models', 
+                  'trading_card_games', 
+                  'other',
+                  'game_room_rental', 
+                  'all_items']
 
-    for col in cols_to_scale:
-    
-        scaled_df = scaled_df.rename(columns={col: col + "_scaled"})
-    
-    df = df.join(scaled_df)
+   to_scale_df = df[cols_to_scale]
 
-    return df
+   scaler = StandardScaler().fit(to_scale_df)
+
+   scaled_array = scaler.transform(to_scale_df)
+
+   scaled_df = pd.DataFrame(scaled_array, columns = cols_to_scale)
+
+   for col in cols_to_scale:
+
+      scaled_df = scaled_df.rename(columns={col: col + "_scaled"})
+
+   df = df.join(scaled_df)
+
+   return df
