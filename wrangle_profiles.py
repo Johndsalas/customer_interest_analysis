@@ -27,35 +27,63 @@ def get_profiles_data():
    '''Takes in dataframe of store data after general preparation
       Returns df of store data prepared for profiles project'''
 
-   #  # set index to date time
-   #  df['datetime'] = pd.to_datetime(df.index)
-   #  df = df.set_index('datetime')
-
+   # read in store data
    df = pd.read_csv('prepared_store_data.csv')
 
-    # get relevent columns
-   df = df[['cust_id', 
-         'event_type',
-         'accessories', 
-         'board_games', 
-         'concessions', 
-         'modeling_supplies',
-         'role_playing_games', 
-         'minis_models', 
-         'trading_card_games', 
-         'other',
-         'game_room_rental', 
-         'all_items',
-         'net_sales']]
+   # get relevent columns
+   df = df[['year',
+            'cust_id', 
+            'event_type',
+            'accessories', 
+            'board_games', 
+            'concessions', 
+            'modeling_supplies',
+            'role_playing_games', 
+            'minis_models', 
+            'trading_card_games', 
+            'other',
+            'game_room_rental', 
+            'all_items',
+            'net_sales']]
 
+   # fill null values
    df = df[df.event_type == 'Payment']
    df = df.drop(columns = 'event_type')
 
-    # revove purchases not tied to an id number
+   # remove purchases not tied to an id number
    df = df[df.cust_id != 'unknown']
-    
+
+   # calculate tenure based on earliest and latest transaction date
+   df['start_date'] = df.cust_id.apply(get_start_date)
+   df['last_date'] = df.cust_id.apply(get_last_date)
+
+   df['tenure'] = df['last_date'].dt.to_period('M').astype(int) - df['start_date'].dt.to_period('M').astype(int)
+
+   df.drop(columns = ['start_date', 'last_date'])
+
+   # add column to count number of transactions
+   df['trans_count'] = 1 
+
+   # restrict data to 2023
+   df = df[df.year == 2023]
+
+   df = df.drop(columns = 'year')
+
    # group data by id drop column and reset the index
-   df = df.groupby('cust_id').agg(sum)
+   df = df.groupby('cust_id').agg({'accessories' : 'sum', 
+                                 'board_games' : 'sum', 
+                                 'concessions' : 'sum', 
+                                 'modeling_supplies' : 'sum',
+                                 'role_playing_games' : 'sum', 
+                                 'minis_models' : 'sum', 
+                                 'trading_card_games' : 'sum', 
+                                 'other' : 'sum',
+                                 'game_room_rental' : 'sum', 
+                                 'all_items' : 'sum',
+                                 'net_sales' : 'sum',
+                                 'trans_count' : 'sum',
+                                 'tenure' : 'max'})
+
    df = df.reset_index()
    df = df.drop(columns = ['cust_id'])
 
@@ -69,7 +97,9 @@ def get_profiles_data():
                     'trading_card_games', 
                     'other',
                     'game_room_rental', 
-                    'all_items']
+                    'all_items',
+                    'trans_count',
+                    'tenure']
 
    to_scale_df = df[cols_to_scale]
 
