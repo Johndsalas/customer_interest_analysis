@@ -137,14 +137,16 @@ def get_rel(df):
 def get_sales(df):
 
     cats = ['accessories', 
-        'board_games', 
-        'concessions',
-        'modeling_supplies', 
-        'role_playing_games', 
-        'minis_models',
-        'trading_card_games']
+            'board_games', 
+            'concessions',
+            'modeling_supplies', 
+            'role_playing_games', 
+            'minis_models',
+            'trading_card_games']
 
-    df_sales = pd.DataFrame()
+    df_sales = pd.DataFrame({'total' : [df.net_sales.count(),
+                                        df.net_sales.mean(),
+                                        df.net_sales.std()]})
 
     for cat in cats:
 
@@ -152,7 +154,40 @@ def get_sales(df):
 
         df_cat = df[df[bought_cat] == True]
 
-        col = [df_cat.net_sales.count(),df_cat.net_sales.mean(),df_cat.net_sales.std()]
+        col = [df_cat.net_sales.count(),
+               df_cat.net_sales.mean(),
+               df_cat.net_sales.std()]
+
+        df_sales[f'{cat}'] = col
+
+    df_sales.rename(index={0: 'Customers', 1: 'Mean Sales', 2: 'Standard Deviation Sales'}, inplace=True)
+
+    df_sales = df_sales.astype('int')
+
+    return df_sales
+
+
+def get_major_sales(df):
+
+    cats = ['board_games', 
+            'modeling_supplies', 
+            'role_playing_games', 
+            'minis_models',
+            'trading_card_games']
+
+    df_sales = pd.DataFrame({'total' : [df.net_sales.count(),
+                                        df.net_sales.mean(),
+                                        df.net_sales.std()]})
+
+    for cat in cats:
+
+        bought_cat = f'bought_{cat}'
+
+        df_cat = df[df[bought_cat] == True]
+
+        col = [df_cat.net_sales.count(),
+               df_cat.net_sales.mean(),
+               df_cat.net_sales.std()]
 
         df_sales[f'{cat}'] = col
 
