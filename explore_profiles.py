@@ -196,3 +196,64 @@ def get_major_sales(df):
     df_sales = df_sales.astype('int')
 
     return df_sales
+
+def get_sales_dist(df):
+
+    plt.boxplot(df.net_sales)
+    plt.title("Overall Net Sales Contain Many Outliers")
+    plt.show()
+
+
+def get_high_mod_sales(df):
+
+    q1 = df.net_sales.quantile(.25)
+    q3 = df.net_sales.quantile(.75)
+
+    iqr = q3 - q1
+
+    upper = q3 + (1.5 * iqr)
+
+    df_mod = df[(df.net_sales <= upper)]
+    df_high = df[(df.net_sales > upper)]
+
+    return df_mod, df_high
+
+
+def get_grouped_sales_dists(df_mod, df_high):
+
+    # Create subplots
+    fig, axs = plt.subplots(1, 2) 
+
+    # Plot the first box plot
+    df_mod.boxplot(column='net_sales', ax=axs[0])
+    axs[0].set_title('Moderate Spenders')
+
+    # Plot the second box plot
+    df_high.boxplot(column='net_sales', ax=axs[1])
+    axs[1].set_title('High Spenders')
+
+    plt.tight_layout() 
+    plt.show()
+
+
+def get_spending_effecfs(df, df_mod, df_high):
+
+    mod_count = len(df_mod)
+    high_count = len(df_high)
+    all_count = len(df)
+
+    mod_mean_sales = df_mod.mean()
+    high_mean_sales = df_high.mean()
+
+    mod_pcust = round(mod_count / all_count, 2) * 100
+    high_pcust = round(high_count / all_count, 2) * 100
+
+    mod_sales = df_mod.net_sales.sum()
+    high_sales = df_high.net_sales.sum()
+
+    tot_sales = df.net_sales.sum()
+    mod_psales = round(mod_sales / tot_sales, 2) * 100
+    high_psales = round(high_sales / tot_sales, 2) * 100
+
+    print(f'Moderate Spenders represent {mod_pcust}% of total customers and {mod_psales}% of total net sales')
+    print(f'High Spenders represent {high_pcust}% of total customers and {high_psales}% of total net sales')
