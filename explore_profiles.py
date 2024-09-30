@@ -12,6 +12,7 @@ from sklearn.cluster import DBSCAN
 
 
 def get_desc(df):
+    ''' Get abriged discribe table'''
 
     cats = ['accessories', 
             'board_games', 
@@ -26,6 +27,7 @@ def get_desc(df):
     return df[cats].describe()[1:3]
 
 def cat_appeal(df):
+    ''' Get chart of category buying habbits'''
 
     cats = ['accessories', 
             'board_games', 
@@ -36,6 +38,7 @@ def cat_appeal(df):
             'trading_card_games', 
             'game_room_rental']
 
+    # buyer and non-buyer percentages 
     buyers = [round(len(df[df['accessories'] > 0]) / len(df)*100),
               round(len(df[df['board_games'] > 0]) / len(df)*100),
               round(len(df[df['modeling_supplies'] > 0]) / len(df)*100),
@@ -54,6 +57,7 @@ def cat_appeal(df):
                   round(len(df[df['trading_card_games'] == 0]) / len(df)*100),
                   round(len(df[df['game_room_rental'] == 0]) / len(df)*100)]
 
+    # create dataframe
     data = { 'Category':cats,
              'Buyers':buyers,
              'Non_Buyers':non_buyers}
@@ -62,6 +66,7 @@ def cat_appeal(df):
 
     df_data.set_index('Category', inplace=True)
 
+    # get dataframe from chart
     df_data.plot(kind='bar', figsize=(10, 6), color = ['gold', 'lightgrey'])
 
     plt.xticks(rotation=40)
