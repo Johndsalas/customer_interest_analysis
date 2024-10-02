@@ -1,4 +1,6 @@
-# Purpose: Describe how differing interest groups influence customer purchasing decisions at a local game store in 2023 and make recommendations for increasing store sales
+# Purpose: 
+
+Describe how differing interest groups influence customer purchasing decisions at a local game store in 2023 and make recommendations for increasing store sales
 
 # Wrangle 
 
@@ -43,5 +45,3 @@ Modeling supplies gamers are those who like to assemble, paint, and otherwise de
 Continue to promote trading card games as this is likely the store's largest source of revenue. Gamers from this group are the store’s largest interest group and make up 70% of the store's top spending customers. Attempt to cross-sale related accessories such as sleeves, playmats, and binders to increase sales. Gamers in this group have an increased likelihood to buy accessories.
 
 Begin initiative to promote role playing games. Role playing games drive purchases in other categories particularly accessories, minis models, and modeling supplies. Role players also spend more on average than any other interest group and are the smallest in number. For these reasons I believe attracting more gamers in this group represents the greatest possibility for increasing sales. Popular organized activities such as D&D Adventure League might be a good way to do this. Attempt to cross-sell related accessories and models. Gamers in this group are 3-4 times more likely to buy these items than non-role playing gamers.
-
-

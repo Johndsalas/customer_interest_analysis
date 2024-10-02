@@ -1,4 +1,4 @@
-''' Holds code used to visualize data'''
+''' Holds code used to explore and visualize project data'''
 
 import pandas as pd
 import numpy as np
@@ -80,6 +80,9 @@ def cat_appeal(df):
 
 
 def get_rel(df):
+    ''' Takes in a dataframe
+        Prints the results of chi-square test and odds ratio for every combination of category listed in function
+        Only prints results if p-value from chi-square test is below .05'''
 
     # get list of categories to examine
     cats = ['accessories', 
@@ -140,6 +143,9 @@ def get_rel(df):
             print()
 
 def get_sales(df):
+    ''' Prints table for customer groups
+        Shows count of group and the mean and standard deviation for net sales'''
+
 
     cats = ['accessories', 
             'board_games', 
@@ -149,30 +155,38 @@ def get_sales(df):
             'minis_models',
             'trading_card_games']
 
-    df_sales = pd.DataFrame({'total' : [df.net_sales.count(),
-                                        df.net_sales.mean(),
-                                        df.net_sales.std()]})
+    # get datafram with column for all customers
+    df_sales = pd.DataFrame({'all_customers' : [df.net_sales.count(),
+                                                df.net_sales.mean(),
+                                                df.net_sales.std()]})
 
+    # for each category
     for cat in cats:
 
+        # get a dataframe with only customers from that group
         bought_cat = f'bought_{cat}'
 
         df_cat = df[df[bought_cat] == True]
 
+        # add a column with count, mean, and std for this group
         col = [df_cat.net_sales.count(),
                df_cat.net_sales.mean(),
                df_cat.net_sales.std()]
 
         df_sales[f'{cat}'] = col
 
+    # rename index with row names 
     df_sales.rename(index={0: 'Customers', 1: 'Mean Sales', 2: 'Standard Deviation Sales'}, inplace=True)
 
+    # cast df as int type
     df_sales = df_sales.astype('int')
 
     return df_sales
 
 
 def get_major_sales(df):
+    ''' Prints table for major interest customer groups
+        Shows count of group and the mean and standard deviation for net sales'''
 
     cats = ['board_games', 
             'modeling_supplies', 
@@ -180,29 +194,36 @@ def get_major_sales(df):
             'minis_models',
             'trading_card_games']
 
-    df_sales = pd.DataFrame({'total' : [df.net_sales.count(),
-                                        df.net_sales.mean(),
-                                        df.net_sales.std()]})
+     # get datafram with column for all customers
+    df_sales = pd.DataFrame({'all_customers' : [df.net_sales.count(),
+                                                df.net_sales.mean(),
+                                                df.net_sales.std()]})
 
+    # for each category
     for cat in cats:
 
+        # get a dataframe with only customers from that group
         bought_cat = f'bought_{cat}'
 
         df_cat = df[df[bought_cat] == True]
 
+        # add a column with count, mean, and std for this group
         col = [df_cat.net_sales.count(),
                df_cat.net_sales.mean(),
                df_cat.net_sales.std()]
 
         df_sales[f'{cat}'] = col
 
+    # rename index with row names 
     df_sales.rename(index={0: 'Customers', 1: 'Mean Sales', 2: 'Standard Deviation Sales'}, inplace=True)
 
+    # cast df as int type
     df_sales = df_sales.astype('int')
 
     return df_sales
 
 def get_sales_dist(df):
+    '''Get boxplot of Net Sales'''
 
     plt.boxplot(df.net_sales)
     plt.title("Overall Net Sales Contain Many Outliers")
@@ -210,7 +231,10 @@ def get_sales_dist(df):
 
 
 def get_high_mod_sales(df):
+    '''Takes in a dataframe 
+       returns two datafromes split into high and moderate spending groups using IQR rule'''
 
+    # get quantiles and calculatre IQR and upper limit
     q1 = df.net_sales.quantile(.25)
     q3 = df.net_sales.quantile(.75)
 
@@ -218,6 +242,7 @@ def get_high_mod_sales(df):
 
     upper = q3 + (1.5 * iqr)
 
+    # split dataframe at upper limit
     df_mod = df[(df.net_sales <= upper)]
     df_high = df[(df.net_sales > upper)]
 
@@ -225,7 +250,8 @@ def get_high_mod_sales(df):
 
 
 def get_grouped_sales_dists(df_mod, df_high):
-
+    '''Takes in a dataframe for moderate and high spending customers
+       shows side by side box plots of net sales distributions for each'''
     # Create subplots
     fig, axs = plt.subplots(1, 2) 
 
@@ -241,24 +267,32 @@ def get_grouped_sales_dists(df_mod, df_high):
     plt.show()
 
 
-def get_spending_effecfs(df, df_mod, df_high):
+def get_spending_effecs(df, df_mod, df_high):
+    ''' Takes in full dataframe and two sub dataframes containing a split of the data 
+        prints message showing the percent of customers in each group and each groups percent of net sales'''
 
+    # get counts of groups
     mod_count = len(df_mod)
     high_count = len(df_high)
     all_count = len(df)
 
+    # get means of high and mod group
     mod_mean_sales = df_mod.mean()
     high_mean_sales = df_high.mean()
 
+    # calculate percent of customers for both groups
     mod_pcust = round(mod_count / all_count, 2) * 100
     high_pcust = round(high_count / all_count, 2) * 100
 
+    # get total sales for full df and both groups
+    tot_sales = df.net_sales.sum()
     mod_sales = df_mod.net_sales.sum()
     high_sales = df_high.net_sales.sum()
-
-    tot_sales = df.net_sales.sum()
+    
+    # calculate percent of sales for each group
     mod_psales = round(mod_sales / tot_sales, 2) * 100
     high_psales = round(high_sales / tot_sales, 2) * 100
 
+    # print message
     print(f'Moderate Spenders represent {mod_pcust}% of total customers and {mod_psales}% of total net sales')
     print(f'High Spenders represent {high_pcust}% of total customers and {high_psales}% of total net sales')
