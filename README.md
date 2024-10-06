@@ -1,6 +1,6 @@
 # Purpose: 
 
-Describe how differing interest groups influence customer purchasing decisions at a local game store in 2023 and make recommendations for increasing store sales
+Describe how differing interest groups influence customer purchasing decisions at a local game store in 2023 and make recommendations for increasing sales
 
 # Wrangle 
 
