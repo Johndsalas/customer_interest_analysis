@@ -4,7 +4,7 @@ Describe how differing interest groups influence customer purchasing decisions a
 
 # Wrangle 
 
-I began the project with data that I pre-prepared in wrangle_lsg_data. The data contained a history of customer transactions with columns describing the number of items bought in each of 9 categories and the net sales of each purchase. For a full breakdown of how the data was prepared see [wrangle_lgs_data](https://github.com/Johndsalas/wrangle_lgs_data/tree/main)
+I began the project with data that I pre-prepared in wrangle_lsg_data. The data contained a history of customer transactions with columns describing the number of items bought in each of 9 categories and the net sales of each purchase. For a full breakdown of how the data was prepared see [Wrangle LGS Data](https://github.com/Johndsalas/wrangle_lgs_data/tree/main).
 
 **Area of interest categories include:**
 * Board Games 
