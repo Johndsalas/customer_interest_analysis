@@ -40,7 +40,7 @@ Minis models gamers likely comprised primarily of “war gamers” and “role p
 
 Modeling supplies gamers are those who like to assemble, paint, and otherwise decorate the models used in their games. Strongly connected with minis models sales of each likely drive sales of the other though the stronger direction is likely minis models to minis supplies. Gamers in this group are 8 times more likely to buy minis models.
 
-## Recommendations
+# Recommendations
 
 Continue to promote trading card games as this is likely the store's largest source of revenue. Gamers from this group are the store’s largest interest group and make up 70% of the store's top spending customers. Attempt to cross-sale related accessories such as sleeves, playmats, and binders to increase sales. Gamers in this group have an increased likelihood to buy accessories.
 
