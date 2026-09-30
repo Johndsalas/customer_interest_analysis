@@ -12,7 +12,7 @@ from sklearn.cluster import DBSCAN
 
 
 def get_desc(df):
-    ''' Get abriged discribe table'''
+    ''' Get abridged describe table'''
 
     cats = ['accessories', 
             'board_games', 
@@ -27,7 +27,7 @@ def get_desc(df):
     return df[cats].describe()[1:3]
 
 def cat_appeal(df):
-    ''' Get chart of category buying habbits'''
+    ''' Get chart of category buying habits'''
 
     cats = ['accessories', 
             'board_games', 
@@ -38,24 +38,10 @@ def cat_appeal(df):
             'trading_card_games', 
             'game_room_rental']
 
-    # buyer and non-buyer percentages 
-    buyers = [round(len(df[df['accessories'] > 0]) / len(df)*100),
-              round(len(df[df['board_games'] > 0]) / len(df)*100),
-              round(len(df[df['modeling_supplies'] > 0]) / len(df)*100),
-              round(len(df[df['role_playing_games'] > 0]) / len(df)*100),
-              round(len(df[df['concessions'] > 0]) / len(df)*100),
-              round(len(df[df['minis_models'] > 0]) / len(df)*100),
-              round(len(df[df['trading_card_games'] > 0]) / len(df)*100),
-              round(len(df[df['game_room_rental'] > 0]) / len(df)*100)]
-        
-    non_buyers = [round(len(df[df['accessories'] == 0]) / len(df)*100),
-                  round(len(df[df['board_games'] == 0]) / len(df)*100),
-                  round(len(df[df['modeling_supplies'] == 0]) / len(df)*100),
-                  round(len(df[df['role_playing_games'] == 0]) / len(df)*100),
-                  round(len(df[df['concessions'] == 0]) / len(df)*100),
-                  round(len(df[df['minis_models'] == 0]) / len(df)*100),
-                  round(len(df[df['trading_card_games'] == 0]) / len(df)*100),
-                  round(len(df[df['game_room_rental'] == 0]) / len(df)*100)]
+    # buyer and non-buyer percentages, built from cats so labels and values stay in the same order
+    buyers = [round(len(df[df[cat] > 0]) / len(df)*100) for cat in cats]
+
+    non_buyers = [round(len(df[df[cat] == 0]) / len(df)*100) for cat in cats]
 
     # create dataframe
     data = { 'Category':cats,
@@ -123,10 +109,10 @@ def get_rel(df):
         if p < alpha:
 
             # get values from crosstab
-            true_true = ct.loc[1, 1]
-            true_false = ct.loc[1, 0]
-            false_false = ct.loc[0, 0]
-            false_true = ct.loc[0, 1]
+            true_true = ct.loc[True, True]
+            true_false = ct.loc[True, False]
+            false_false = ct.loc[False, False]
+            false_true = ct.loc[False, True]
 
             # calculate odds ratio
             true_ratio = true_true/true_false
@@ -164,9 +150,7 @@ def get_sales(df):
     for cat in cats:
 
         # get a dataframe with only customers from that group
-        bought_cat = f'bought_{cat}'
-
-        df_cat = df[df[bought_cat] == True]
+        df_cat = df[df[cat] > 0]
 
         # add a column with count, mean, and std for this group
         col = [df_cat.net_sales.count(),
@@ -203,9 +187,7 @@ def get_major_sales(df):
     for cat in cats:
 
         # get a dataframe with only customers from that group
-        bought_cat = f'bought_{cat}'
-
-        df_cat = df[df[bought_cat] == True]
+        df_cat = df[df[cat] > 0]
 
         # add a column with count, mean, and std for this group
         col = [df_cat.net_sales.count(),
@@ -267,7 +249,7 @@ def get_grouped_sales_dists(df_mod, df_high):
     plt.show()
 
 
-def get_spending_effecs(df, df_mod, df_high):
+def get_spending_effects(df, df_mod, df_high):
     ''' Takes in full dataframe and two sub dataframes containing a split of the data 
         prints message showing the percent of customers in each group and each groups percent of net sales'''
 
