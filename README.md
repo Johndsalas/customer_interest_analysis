@@ -24,7 +24,7 @@ I began the project with data that I pre-prepared in wrangle_lgs_data. The data 
 * Other
 <a/>
 
-The data was then restricted to purchases made in 2023 and aggregated by customer to get total values for each category and net spending for purchases made in 2023. An early attempt to cluster customers on category counts (k-means and DBSCAN) was abandoned because count features could not separate customers; see the [commit history](https://github.com/Johndsalas/customer_interest_analysis/commits/main). After exploring the data I was able to draw the following conclusions and make the following recommendations.
+The data was then restricted to purchases made in 2023 and aggregated by customer to get total values for each category and net spending for purchases made in 2023. An early attempt to cluster customers on category counts (k-means and DBSCAN) was abandoned due to poor performance because feature counts had inconsistent internal scaling that equated expensive purchases with inexpensive ones. After exploring the data I was able to draw the following conclusions and make the following recommendations.
 
 # Conclusion
 
