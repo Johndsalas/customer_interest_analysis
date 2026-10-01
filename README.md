@@ -24,7 +24,7 @@ I began the project with data that I pre-prepared in wrangle_lgs_data. The data 
 * Other
 <a/>
 
-The data was then restricted to purchases made in 2023 and aggregated by customer to get total values for each category and net spending for purchases made in 2023. An early attempt to cluster customers on category counts (k-means and DBSCAN) was abandoned due to poor performance because feature counts had inconsistent internal scaling that equated expensive purchases with inexpensive ones. After exploring the data I was able to draw the following conclusions and make the following recommendations.
+The data was then restricted to purchases made in 2023 and aggregated by customer to get total values for each category and net spending for purchases made in 2023. An early attempt to cluster customers on category counts (k-means and DBSCAN) was abandoned due to poor performance. The features counted items purchased, so an inexpensive purchase and an expensive one each counted as one. Item prices were not available, since the data recorded one sales total per transaction rather than per item. Scaling was tried, but it only balances ranges across features; it could not restore price information the counts never contained (the attempt remains in the commit history). After exploring the data I was able to draw the following conclusions and make the following recommendations.
 
 # Conclusion
 
